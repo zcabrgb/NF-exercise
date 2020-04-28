@@ -14,23 +14,30 @@ import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.css';
 
 var weekday = new Array(7);
-weekday[0] = 'Sunday';
-weekday[1] = 'Monday';
-weekday[2] = 'Tuesday';
-weekday[3] = 'Wednesday';
-weekday[4] = 'Thursday';
-weekday[5] = 'Friday';
-weekday[6] = 'Saturday';
+
+weekday[0] = 'MON';
+weekday[1] = 'TUE';
+weekday[2] = 'WED';
+weekday[3] = 'THU';
+weekday[4] = 'FRI';
+weekday[5] = 'SAT';
+weekday[6] = 'SUN';
+
+const pictureURL = 'http://openweathermap.org/img/wn/';
+
+const getTime = () => {
+  let date = new Date();
+  return `${date.getHours()} : ${date.getMinutes()}`;
+};
+
+const getDay = (date) => {
+  return new Date(date).getDay();
+};
 
 function App() {
   const [fetch, setFetch] = useState(0);
 
-  // console.log(date.getHours() + ':' + date.getMinutes());
-  const getDate = () => {
-    let date = new Date();
-    return `${date.getHours()} : ${date.getMinutes()}`;
-  };
-  const [currTime, setCurrTime] = useState(getDate);
+  const [currTime, setCurrTime] = useState(getTime);
   const [data, loading] = useFetch(
     `https://api.openweathermap.org/data/2.5/forecast?q=London&units=metric&appid=${process.env.REACT_APP_API_KEY}`,
     0
@@ -41,13 +48,34 @@ function App() {
   );
   useInterval(() => {
     setFetch(fetch + 1);
-    setCurrTime(getDate);
+    setCurrTime(getTime);
   }, 6000000);
 
-  console.log('data, loading: ', data.data);
-  // console.log('currData, loading: ', currData.data);
-  // console.log(fetch);
-  console.log('day', weekday[new Date(data?.data?.list[0]?.dt_txt).getDay()]);
+  function list1(data) {
+    var result = [];
+    var day = -1;
+    while (day < 7) {
+      day += 1;
+      for (let i = 0; i < 39; i++) {
+        if (getDay(data?.data?.list[i].dt_txt) === day) {
+          result.push(data?.data?.list[i]);
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  const list = (data) => {
+    console.log(list1(data));
+    return list1(data).map((d) => (
+      <DayCard
+        day={weekday[getDay(d.dt_txt)]}
+        temperature={d.main.temp + '°'}
+        image={`${pictureURL}${d.weather[0].icon}.png`}
+      ></DayCard>
+    ));
+  };
 
   return (
     <div
@@ -63,14 +91,7 @@ function App() {
           time={currTime}
         ></TodayCard>
       )}
-      {/* <TodayCard
-        city={'currData.data.name'}
-        temperature={'currData.data.main.temp'}
-        time={'currTime'}
-      ></TodayCard> */}
-      <DayCard day={'Monday'} temperature={'3°'}></DayCard>
-      <DayCard day={'Monday1'} temperature={'3°'}></DayCard>
-      <DayCard day={'Monday2'} temperature={'3°'}></DayCard>
+      {!loading && list(data)}
     </div>
   );
 }

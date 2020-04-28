@@ -1,17 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
+
 import useFetch from './customHooks/useFetch';
 import useInterval from './customHooks/useInterval';
-
-import './App.css';
-import LoadingBar from './components/loadingBar';
 import TodayCard from './components/todayCard';
 import DayCard from './components/dayCard';
-
-import Container from 'react-bootstrap/Container';
-// import Row from 'react-bootstrap/ProgressBar';
-// import Row from 'react-bootstrap/ProgressBar';
-
-import 'bootstrap/dist/css/bootstrap.css';
 
 var weekday = new Array(7);
 
@@ -38,9 +32,10 @@ function App() {
   const [fetch, setFetch] = useState(0);
 
   const [currTime, setCurrTime] = useState(getTime);
+  const [fetchFail, setFetchFail] = useState(false);
   const [data, loading] = useFetch(
     `https://api.openweathermap.org/data/2.5/forecast?q=London&units=metric&appid=${process.env.REACT_APP_API_KEY}`,
-    0
+    fetch
   );
   const [currData, loadingCurrData] = useFetch(
     `https://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=${process.env.REACT_APP_API_KEY}`,
@@ -49,7 +44,7 @@ function App() {
   useInterval(() => {
     setFetch(fetch + 1);
     setCurrTime(getTime);
-  }, 6000000);
+  }, 60000);
 
   function list1(data) {
     var result = [];
@@ -67,7 +62,6 @@ function App() {
   }
 
   const list = (data) => {
-    console.log(list1(data));
     return list1(data).map((d) => (
       <DayCard
         day={weekday[getDay(d.dt_txt)]}
@@ -78,7 +72,6 @@ function App() {
     ));
   };
 
-  // console.log(list(data));
   return (
     <div
       style={{

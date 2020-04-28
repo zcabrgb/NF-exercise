@@ -73,10 +73,12 @@ function App() {
         day={weekday[getDay(d.dt_txt)]}
         temperature={d.main.temp + '°'}
         image={`${pictureURL}${d.weather[0].icon}.png`}
+        caption={`${d.weather[0].description}`}
       ></DayCard>
     ));
   };
 
+  // console.log(list(data));
   return (
     <div
       style={{

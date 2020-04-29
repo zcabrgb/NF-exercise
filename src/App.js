@@ -31,7 +31,6 @@ const getDay = (date) => {
 function App() {
   const [fetch, setFetch] = useState(0);
   const [currTime, setCurrTime] = useState(getTime);
-  const [fetchFail, setFetchFail] = useState(false);
   const [data, loading] = useFetch(
     `https://api.openweathermap.org/data/2.5/forecast?q=London&units=metric&appid=${process.env.REACT_APP_API_KEY}`,
     fetch
@@ -43,9 +42,21 @@ function App() {
   useInterval(() => {
     setFetch(fetch + 1);
     setCurrTime(getTime);
+    if (data?.data?.cod === 200) {
+      localStorage.setItem('data', JSON.stringify(data));
+    }
+    if (currData?.data?.cod === 200) {
+      localStorage.setItem('currData', JSON.stringify(currData));
+    }
   }, 60000);
 
   function listFilter(data) {
+    if (data?.data?.cod != 200) {
+      data = localStorage.getItem('data')
+        ? JSON.parse(localStorage.getItem('data'))
+        : '';
+    }
+
     var result = [];
     var day = -1;
     while (day < 7) {

@@ -58,6 +58,9 @@ function App() {
         }
       }
     }
+    result.sort(function (a, b) {
+      return a.dt - b.dt;
+    });
     return result;
   }
 

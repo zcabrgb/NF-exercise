@@ -46,7 +46,7 @@ function App() {
     setCurrTime(getTime);
   }, 60000);
 
-  function list1(data) {
+  function listFilter(data) {
     var result = [];
     var day = -1;
     while (day < 7) {
@@ -62,7 +62,7 @@ function App() {
   }
 
   const list = (data) => {
-    return list1(data).map((d) => (
+    return listFilter(data).map((d) => (
       <DayCard
         day={weekday[getDay(d.dt_txt)]}
         temperature={d.main.temp + '°'}

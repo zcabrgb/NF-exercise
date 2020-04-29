@@ -30,7 +30,6 @@ const getDay = (date) => {
 
 function App() {
   const [fetch, setFetch] = useState(0);
-
   const [currTime, setCurrTime] = useState(getTime);
   const [fetchFail, setFetchFail] = useState(false);
   const [data, loading] = useFetch(
@@ -68,7 +67,7 @@ function App() {
     return listFilter(data).map((d) => (
       <DayCard
         day={weekday[getDay(d.dt_txt)]}
-        temperature={d.main.temp + '°'}
+        temperature={Math.round(d.main.temp) + '°'}
         image={`${pictureURL}${d.weather[0].icon}.png`}
         caption={`${d.weather[0].description}`}
       ></DayCard>
@@ -85,7 +84,7 @@ function App() {
       {!loadingCurrData && (
         <TodayCard
           city={currData.data.name}
-          temperature={currData.data.main.temp + '°'}
+          temperature={Math.round(currData.data.main.temp) + '°'}
           time={currTime}
         ></TodayCard>
       )}
